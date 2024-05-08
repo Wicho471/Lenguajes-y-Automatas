@@ -1,0 +1,49 @@
+/*
+* Este es un programa de ejemplo para verificar la correcta funcionalidad de la sintaxis
+*/
+Begin
+	
+	Integer max = 10; // Este es una declaracion con asignacion
+	
+	Integer firshNum = 0;
+	
+	Integer SecodNum = 1;
+	
+	Integer fibo; // Esta es una declaracion sin asignacion
+	
+	for(Integer i = 0; i < MAX; i++) {
+	
+		fibonacci = firstNum + secondNum; // Esta es una asignacion con una EAS
+		
+		firstNum = secondNum; //Otra asignacion pero sin EAS
+		
+		secondNum = fibonacci; // Ultima asignacion sin EAS
+	} 
+	
+	String miCadena = "Esta es una cadena"; // Variable tipo cadena
+	
+	Character miCaracter = 'G'; // Variable tipo caracter
+	
+	Float miReal = 1.0; // Variable tipo flotante
+	
+	Integer thirdNum;
+	
+	if (firshNum < SecodNum) { // Ejemplo del funcionamiento de un if
+		thirdNum = SecodNum - firshNum;
+	} else if (firshNum > SecodNum){ // Ejemplo del funcionamiento de un else if
+		thirdNum = SecodNum - firshNum;
+	} else { // Ejemplo del funcionamiento de un else
+		thirdNum = firshNum * SecodNum;
+	}
+	
+	while(firshNum < SecodNum){ // Ejemplo del funcionamiento de un while
+		firshNum = firshNum + 1;
+	}
+	
+	Integer contador = 0;
+	
+	do { // Ejemplo de un ciclo de control do while
+		contador = contador + 1;
+	} while (contador<=10);
+	
+End

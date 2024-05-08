@@ -1,0 +1,20 @@
+BEGIN;
+(;
+1111; //Esta cadena es repedtida
+110100; 
+010011;
+/* 
+	Este es un comentario 
+	de multiples
+	lineas
+*/		
+ ;
+1111
+    1;
+1010; 
+noValido; //Esta cadena no es valida
+1111; 
+1111; // Este es una cadena repetida
+000011;
+);
+END;

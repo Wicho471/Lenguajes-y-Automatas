@@ -1,0 +1,15 @@
+110100; 
+010011;
+(a+b)*a
+/* Este es un comentario de multiples lineas
+    000
+    0000
+*/		
+ ;
+1111
+    1;
+1010; 
+aaaa; //Esta cadena no es valida
+1111; 
+1111; // Este es una cadena repetida
+000011;
