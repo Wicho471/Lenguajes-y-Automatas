@@ -2,6 +2,16 @@
 * Este es un programa de ejemplo para verificar la correcta funcionalidad de la sintaxis
 */
 Begin
+	//Todos los posibles operadores de comparacion y logicos
+	Boolean var = ((5 > 3) && (7 >= 7)) || ((10 == 10) && (15 != 20)) || !(25 < 20);
+	
+	String miCadena = "Esta es una cadena"; // Variable tipo cadena
+	
+	Character miCaracter = 'G'; // Variable tipo caracter
+	
+	Float miReal = 1.0; // Variable tipo flotante
+	
+	Integer thirdNum;
 	
 	Integer max = 10; // Este es una declaracion con asignacion
 	
@@ -19,14 +29,6 @@ Begin
 		
 		secondNum = fibonacci; // Ultima asignacion sin EAS
 	} 
-	
-	String miCadena = "Esta es una cadena"; // Variable tipo cadena
-	
-	Character miCaracter = 'G'; // Variable tipo caracter
-	
-	Float miReal = 1.0; // Variable tipo flotante
-	
-	Integer thirdNum;
 	
 	if (firshNum < SecodNum) { // Ejemplo del funcionamiento de un if
 		thirdNum = SecodNum - firshNum;

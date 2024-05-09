@@ -54,8 +54,9 @@ public class Lista<E> {
 	 * @param list La nueva lista
 	 */
 	public Lista(Lista<E> list) {
-		this.root = list.getRoot();
-		this.size = getSize();
+		for (int i = 0; i < list.getSize(); i++) {
+			addToEnd(list.getElement(i));
+		}
 	}
 
 	// Metodos para eleminar elementos de la lista
@@ -414,14 +415,5 @@ public class Lista<E> {
 	 */
 	public int getSize() {
 		return this.size;
-	}
-
-	/**
-	 * Retorna el nodo raiz de la lista
-	 *
-	 * @return La raiz de la lista.
-	 */
-	public nodoLista<E> getRoot() {
-		return this.root;
 	}
 }

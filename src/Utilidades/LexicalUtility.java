@@ -16,9 +16,9 @@ import java.util.Scanner;
  */
 public class LexicalUtility extends StringHandler {
 
-	protected static Lista<myToken> FinalLexicalResult = new Lista<myToken>();
-	protected static Lista<myToken> OriginalLexeme = new Lista<myToken>();
-
+	protected static Lista<myToken> symbolTable = new Lista<myToken>();
+	protected static Lista<myToken> tokenTable = new Lista<myToken>();
+	
 	private final static char DELIMITER = ';';
 
 	// Lexical v1
@@ -147,7 +147,7 @@ public class LexicalUtility extends StringHandler {
 		}
 		// Aqui se agrega la linea de cada lexema
 		for (int i = 0; i < lines.getSize(); i++) {
-			OriginalLexeme.getElement(i).addLine(lines.getElement(i));
+			tokenTable.getElement(i).addLine(lines.getElement(i));
 		}
 
 		return lines;
@@ -208,7 +208,7 @@ public class LexicalUtility extends StringHandler {
 		// Aqui se agrega el lexema a la tabla
 		for (int i = 0; i < strings.getSize(); i++) {
 			myToken lexeme = new myToken(strings.getElement(i));
-			OriginalLexeme.addToEnd(lexeme);
+			tokenTable.addToEnd(lexeme);
 		}
 		return strings;
 	}
@@ -233,7 +233,7 @@ public class LexicalUtility extends StringHandler {
 		Lista<String> aux = new Lista<String>();
 		StringBuilder string = new StringBuilder();
 		for (int i = 0; i < original.length(); i++) {
-			char currentChar = original.charAt(i);
+			char currentChar = getChar(original, i);
 			if (Character.isWhitespace(currentChar)) {
 				if (string.length() > 0) {
 					aux.addToEnd(string.toString());
@@ -262,7 +262,7 @@ public class LexicalUtility extends StringHandler {
 	 */
 	protected static Lista<myToken> getSymbolTable(Lista<myToken> table) {
 	    Lista<myToken> uniqueTokens = new Lista<>(); // Lista para almacenar tokens consolidados.
-
+	    
 	    for (int i = 0; i < table.getSize(); i++) {
 	        myToken currentToken = table.getElement(i);
 	        boolean found = false;
@@ -270,9 +270,9 @@ public class LexicalUtility extends StringHandler {
 	        // Buscar en la lista de tokens únicos para ver si el lexema ya está.
 	        for (int j = 0; j < uniqueTokens.getSize(); j++) {
 	            myToken existingToken = uniqueTokens.getElement(j);
-	            if (existingToken.getLexeme().equals(currentToken.getLexeme())) {
-	                // Si el lexema ya existe, añadir la línea del token actual al token existente.
-	                existingToken.addLine(currentToken.getLines()); // Asume que getLines devuelve un int o List<Integer>.
+	            if (compareStrings(existingToken.getLexeme(), currentToken.getLexeme())) {
+	                // Si el lexema ya existe, añadir todas las líneas del token actual al token existente.
+	                existingToken.addLine(currentToken.getLines());
 	                found = true;
 	                break;
 	            }
@@ -281,11 +281,10 @@ public class LexicalUtility extends StringHandler {
 	        if (!found) {
 	            // Si el lexema no está en uniqueTokens, añadir el token a la lista.
 	            myToken newToken = new myToken(currentToken.getToken(), currentToken.getLexeme(), currentToken.getLines(), currentToken.getValue());
-	            newToken.addLine(currentToken.getLines()); // Añadir la línea del token actual.
 	            uniqueTokens.addToEnd(newToken);
 	        }
 	    }
-
+	    symbolTable = uniqueTokens;
 	    return uniqueTokens;
 	}
 
@@ -319,7 +318,6 @@ public class LexicalUtility extends StringHandler {
 	 *               valor opcional.
 	 */
 	public static void printTable(Lista<myToken> table) {
-		System.out.println("--------------------Tabla de tokens--------------------");
 		 
 		int maxTokenLen = "Token".length();
 		int maxLexemeLen = "Lexema".length();

@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 import Lenguajes_Automatas2.FAs.DFA_L1;
-import Utilidades.LexicalUtility;
 
 /* 1. Cree un programa Java para el primer léxico y tome su DFA M(L) o superior de su preferencia, 
  * para que la cadena se lea del archivo. Llame a este programa Lexical_v1. Por ejemplo, 

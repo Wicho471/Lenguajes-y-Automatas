@@ -19,16 +19,6 @@ public class myToken {
 
 	// Constructores
 	/**
-	 * Constructor por defecto que inicializa un token sin datos específicos.
-	 */
-	public myToken() {
-		this.token = "";
-		this.lexeme = "";
-		this.rows = new Lista<Integer>();
-		this.value = null;
-	}
-
-	/**
 	 * Constructor que inicializa el token con un identificador de tipo de token
 	 * específico.
 	 * 
@@ -74,7 +64,7 @@ public class myToken {
 		this.value = value;
 		this.col = null;
 	}
-
+	
 	// Métodos para instanciar los atributos
 	/**
 	 * Establece el identificador del tipo de token.
@@ -109,7 +99,12 @@ public class myToken {
 	 * @param lines El número de línea a añadir.
 	 */
 	public void addLine(Lista<Integer> lines) {
-		this.rows = lines;
+	    for (int i = 0; i < lines.getSize(); i++) {
+	        Integer line = lines.getElement(i);
+	        if (!this.rows.contains(line)) {
+	            this.rows.addToEnd(line);
+	        }
+	    }
 	}
 
 	/**
