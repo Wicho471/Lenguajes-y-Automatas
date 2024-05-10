@@ -117,20 +117,6 @@ public class SintacticoGecko extends StringHandler {
 	private static Lista<String> tokenList = new Lista<String>();
 	private static int pos = 0;
 
-	// Palabras clave y tipos de datos
-	private static final String BEGIN = "Begin", BOOLEAN = "Boolean", CASE = "case", CHAR = "Character",
-			DEFAULT = "default", DO = "do", ELSE = "else", END = "End", FLOAT = "Float", FOR = "for",
-			IDENTIFIER = "Identifier", IF = "if", INTEGER = "Integer", STRING = "String", SWITCH = "switch",
-			WHILE = "while";
-
-	@SuppressWarnings("unused")
-	// Símbolos y operadores
-	private static final String ASSIGN = "=", COLON = ":", COMMA = ",", DECREMENT = "--", DIVIDE = "/", DOT = ".",
-			EQUALS = "==", GREATER = ">", GREATER_EQUAL = ">=", INCREMENT = "++", LEFT_BRACE = "{", LEFT_BRACKET = "[",
-			LEFT_PAREN = "(", LESS = "<", LESS_EQUAL = "<=", MINUS = "-", MODULO = "%", NOT = "!", NOT_EQUALS = "!=",
-			OR = "||", PLUS = "+", RIGHT_BRACE = "}", RIGHT_BRACKET = "]", RIGHT_PAREN = ")", SEMICOLON = ";",
-			AND = "&&", TIMES = "*";
-
 	// Produccionnes
 	private void syntaxAnalysis() { // Produccion Gecko
 		match(BEGIN);
@@ -158,6 +144,9 @@ public class SintacticoGecko extends StringHandler {
 			parseDoWhile();
 		} else if (compareStrings(token, SWITCH)) {
 			parseSwitch();
+		} else if (compareStrings(token, BREAK) || compareStrings(token, CONTINUE)) {
+			match(token);
+			match(SEMICOLON);
 		} else {
 			parseAssignment();
 		}
@@ -214,7 +203,7 @@ public class SintacticoGecko extends StringHandler {
 		match(SEMICOLON); // ';'
 		parseExpression();
 		match(SEMICOLON); // ';'
-		parseSetpFor();
+		parseStepFor();
 		match(RIGHT_PAREN); // ')'
 		match(LEFT_BRACE); // '{'
 		parseBlock();
@@ -222,12 +211,13 @@ public class SintacticoGecko extends StringHandler {
 	}
 
 	private static void parseIniFor() {
-		if (isDataType(currentToken())) {
-			match(currentToken());
+		String token = currentToken();
+		if (isDataType(token)) {
+			match(token);
 			match(IDENTIFIER);
 			match(ASSIGN);
 			parseArithmeticExpression();
-		} else if (compareStrings(currentToken(), IDENTIFIER)) {
+		} else if (compareStrings(token, IDENTIFIER)) {
 			match(IDENTIFIER);
 			match(ASSIGN);
 			parseArithmeticExpression();
@@ -236,15 +226,16 @@ public class SintacticoGecko extends StringHandler {
 		}
 	}
 
-	private static void parseSetpFor() {
+	private static void parseStepFor() {
 		match(IDENTIFIER);
-		if (compareStrings(currentToken(), INCREMENT) || compareStrings(currentToken(), DECREMENT)) {
-			match(currentToken());
-		} else if (compareStrings(currentToken(), ASSIGN)) {
+		String token = currentToken();
+		if (compareStrings(token, INCREMENT) || compareStrings(token, DECREMENT)) {
+			match(token);
+		} else if (compareStrings(token, ASSIGN)) {
 			match(ASSIGN);
 			parseArithmeticExpression();
 		} else {
-			throw new RuntimeException("Unexpected token in expression: " + currentToken());
+			throw new RuntimeException("Unexpected token in expression: " + token);
 		}
 	}
 	// Aqui termina las producciones de for
@@ -284,11 +275,19 @@ public class SintacticoGecko extends StringHandler {
 				match(CASE);
 				match(currentToken());
 				match(COLON); // ':'
-				parseBlock();
+				while (!compareStrings(currentToken(), BREAK)) {
+					parseStatement();
+				}
+				match(BREAK);
+				match(SEMICOLON);
 			} else {
 				match(DEFAULT);
 				match(COLON); // ':'
-				parseBlock();
+				while (!compareStrings(currentToken(), BREAK)) {
+					parseStatement();
+				}
+				match(BREAK);
+				match(SEMICOLON);
 			}
 		}
 		match(RIGHT_BRACE); // }

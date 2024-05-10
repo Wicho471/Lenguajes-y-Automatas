@@ -100,7 +100,6 @@ public class LexicalUtility extends StringHandler {
 					while (!(getChar(str, i) == '\n')) {
 						i++;
 					}
-					newString += "\n";
 					// Aqui se verifica si hay el token de comentario para multiples lineas
 				} else if (getChar(str, i) == '/' && getChar(str, i + 1) == '*') {
 					i += 2;

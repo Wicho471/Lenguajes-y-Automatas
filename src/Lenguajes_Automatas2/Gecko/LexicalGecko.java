@@ -5,23 +5,22 @@ import Utilidades.Lista;
 import Utilidades.myToken;
 
 public class LexicalGecko extends LexicalUtility {
-	
+
 	public static void main(String[] args) throws Exception {
 		LexicalGecko lexical = new LexicalGecko("src\\Lenguajes_Automatas2\\txt\\Gecko.txt");
 		lexical.printTokenTable();
 		lexical.printSymbolTable();
 	}
-	
+
 	// Variables globales para un facil acceso
 	private final String input; // Cadena a analizar
 	private int charPos; // Posicion del char actual
 	private int row; // Valor entero de la linea actual
 	private int col; // Valor entero de la columna actual
-	
+
 	// Aqui se guardan las palabras reservadas
-	private final Lista<String> keyWords = new Lista<>("Begin", "End", "if", "else", "Integer", "Float", "String",
-			"Character", "Boolean", "for", "while", "do", "switch", "True", "False", "continue", "return", "new",
-			"this", "null"); // Aqui van las palabras reservadas
+	private final Lista<String> keyWords = new Lista<>(BEGIN, END, IF, ELSE, INTEGER, FLOAT, STRING, CHAR, BOOLEAN, FOR,
+			WHILE, DO, SWITCH, TRUE, FALSE, CONTINUE, RETURN, NEW, THIS, NULL, CASE, DEFAULT,BREAK); 
 
 	// Aqui se guardan los posibles simbolos a leer
 	private final Lista<Character> symbolsList = new Lista<>('=', '<', '>', '(', ')', '{', '}', '[', ']', ':', '"',
@@ -60,11 +59,12 @@ public class LexicalGecko extends LexicalUtility {
 				tokenTable.addToEnd(tokenizeNumberOrReal()); // Llama la funcion para tokenizar el numero
 
 			} else if (Character.isLetter(current)) { // Si el caracter actual es una letra
-				tokenTable.addToEnd(tokenizeIdentifierOrKeyword()); // Manda llamar la funcion que verifica si es un Id o
+				tokenTable.addToEnd(tokenizeIdentifierOrKeyword()); // Manda llamar la funcion que verifica si es un Id
+																	// o
 																	// una palabra reservada
 			} else if (isSymbol(current)) { // Si el caracter actual es un simbolo
 				tokenTable.addToEnd(tokenizeOperatorOrSymbol()); // Se llama la funcion que verifica si es un operador o
-																// es un symbolo
+																	// es un symbolo
 
 			} else { // Si ninguna de las anteriores se cumplio
 				throw new RuntimeException("Unexpected character: " + current); // Finaliza el programa porque el
@@ -107,7 +107,7 @@ public class LexicalGecko extends LexicalUtility {
 		if (isKeyword(value)) {
 			return new myToken(value, value, row, null, col++);
 		} else {
-			return new myToken("Identifier", value, row, null, col++);
+			return new myToken(IDENTIFIER, value, row, null, col++);
 		}
 	}
 
@@ -121,9 +121,9 @@ public class LexicalGecko extends LexicalUtility {
 			while (Character.isDigit(currentChar())) {
 				number.append(consumeChar());
 			}
-			return new myToken("Float", number.toString(), row, String.valueOf(number), col++);
+			return new myToken(FLOAT, number.toString(), row, String.valueOf(number), col++);
 		} else {
-			return new myToken("Integer", number.toString(), row, String.valueOf(number), col++);
+			return new myToken(INTEGER, number.toString(), row, String.valueOf(number), col++);
 		}
 	}
 
@@ -134,7 +134,7 @@ public class LexicalGecko extends LexicalUtility {
 			value.append(consumeChar());
 		}
 		value.append(consumeChar());
-		return new myToken("String", value.toString(), row, String.valueOf(value), col++);
+		return new myToken(STRING, value.toString(), row, String.valueOf(value), col++);
 	}
 
 	private myToken getChar(char currentChar) {
@@ -142,7 +142,7 @@ public class LexicalGecko extends LexicalUtility {
 		value.append(currentChar); // La primera coma simple
 		value.append(consumeChar());
 		value.append(consumeChar());
-		return new myToken("Character", value.toString(), row, String.valueOf(value), col++);
+		return new myToken(CHAR, value.toString(), row, String.valueOf(value), col++);
 	}
 
 	// Metodos para la obtencion de caracteres
@@ -170,26 +170,26 @@ public class LexicalGecko extends LexicalUtility {
 	private boolean isArtmieticOperator(char value) {
 		return artmieticOperator.contains(value);
 	}
-	
-	//Otros metodos
+
+	// Otros metodos
 	public void printTokenTable() {
-		System.out.println("--------------------Tabla de tokens--------------------");
+		System.out.println("\n--------------------Tabla de tokens--------------------");
 		printTable(tokenTable);
 	}
-	
+
 	public void printSymbolTable() {
-		System.out.println("--------------------Tabla de simbolos--------------------");
+		System.out.println("\n--------------------Tabla de simbolos--------------------");
 		printTable(symbolTable);
 	}
 
 	public Lista<myToken> getSymbolTable() {
 		return symbolTable;
 	}
-	
+
 	public Lista<myToken> getTokenTable() {
 		return tokenTable;
 	}
-	
+
 	public void printInput() {
 		printInput(this.input);
 	}

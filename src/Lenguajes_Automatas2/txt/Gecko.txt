@@ -1,51 +1,72 @@
 /*
-* Este es un programa de ejemplo para verificar la correcta funcionalidad de la sintaxis
+* Programa de prueba para verificar la correcta funcionalidad de todas las producciones sintácticas
+* del lenguaje de programación Gecko.
 */
 Begin
-	//Todos los posibles operadores de comparacion y logicos
-	Boolean var = ((5 > 3) && (7 >= 7)) || ((10 == 10) && (15 != 20)) || !(25 < 20);
-	
-	String miCadena = "Esta es una cadena"; // Variable tipo cadena
-	
-	Character miCaracter = 'G'; // Variable tipo caracter
-	
-	Float miReal = 1.0; // Variable tipo flotante
-	
-	Integer thirdNum;
-	
-	Integer max = 10; // Este es una declaracion con asignacion
-	
-	Integer firshNum = 0;
-	
-	Integer SecodNum = 1;
-	
-	Integer fibo; // Esta es una declaracion sin asignacion
-	
-	for(Integer i = 0; i < MAX; i++) {
-	
-		fibonacci = firstNum + secondNum; // Esta es una asignacion con una EAS
-		
-		firstNum = secondNum; //Otra asignacion pero sin EAS
-		
-		secondNum = fibonacci; // Ultima asignacion sin EAS
-	} 
-	
-	if (firshNum < SecodNum) { // Ejemplo del funcionamiento de un if
-		thirdNum = SecodNum - firshNum;
-	} else if (firshNum > SecodNum){ // Ejemplo del funcionamiento de un else if
-		thirdNum = SecodNum - firshNum;
-	} else { // Ejemplo del funcionamiento de un else
-		thirdNum = firshNum * SecodNum;
-	}
-	
-	while(firshNum < SecodNum){ // Ejemplo del funcionamiento de un while
-		firshNum = firshNum + 1;
-	}
-	
-	Integer contador = 0;
-	
-	do { // Ejemplo de un ciclo de control do while
-		contador = contador + 1;
-	} while (contador<=10);
-	
+    // Declaraciones de variables con inicialización
+    Integer entero = 42;
+    Float decimal = 3.14;
+    String texto = "Hola Mundo";
+    Character letra = 'A';
+    Boolean verdad = True;
+
+    // Declaración sin asignación inicial
+    Integer sinValor;
+
+    // Operadores aritméticos
+    Integer suma = 5 + 3;
+    Integer resta = 10 - 2;
+    Integer multiplicacion = 4 * 2;
+    Integer division = 20 / 5;
+    Integer modulo = 7 % 3;
+
+    // Operadores de comparación y lógicos
+    Boolean comparacion1 = (5 == 5);
+    Boolean comparacion2 = (3 != 4);
+    Boolean comparacion3 = (7 < 10);
+    Boolean comparacion4 = (8 > 6);
+    Boolean comparacion5 = (9 <= 9);
+    Boolean comparacion6 = (10 >= 10);
+    Boolean logico = (True && False) || !False;
+
+    // Estructuras de control If-ElseIf-Else
+    if (entero == 42) {
+        texto = "El valor es 42";
+    } else if (entero < 42) {
+        texto = "El valor es menor que 42";
+    } else {
+        texto = "El valor es mayor que 42";
+    }
+
+    // Ciclo For con inicialización, condición y paso
+    for (Integer i = 0; i < 5; i++) {
+        entero = entero + 1;
+    }
+
+    // Ciclo While
+    while (verdad == True) {
+        verdad = False;  // Cambio de condición para evitar un ciclo infinito
+    }
+
+    // Ciclo Do-While
+    do {
+        texto = texto + "!";
+        contador = contador + 1;
+    } while (contador < 5);
+
+    // Switch con casos y valor predeterminado
+    switch (entero) {
+        case 10:
+            texto = "Diez";
+            break;
+        case 20:
+            texto = "Veinte";
+            break;
+        case 30:
+            texto = "Treinta";
+        	break;
+        default:
+            texto = "Otro valor";
+			break;    
+    } 
 End
