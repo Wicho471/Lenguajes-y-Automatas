@@ -7,7 +7,7 @@ public class Constanes {
 	        ELSE = "else", SWITCH = "switch", CASE = "case", DEFAULT = "default";
 
 	// Control de bucles y estructuras
-	protected static final String BREAK = "break", CONTINUE = "continue";
+	protected static final String BREAK = "break", CONTINUE = "continue", YIELD = "yield";
 
 	// Tipos de datos y manejo de objetos
 	protected static final String ARRAY = "array", OBJECT = "object", NEW = "new", NULL = "null", TRUE = "true",
@@ -35,6 +35,9 @@ public class Constanes {
 	protected static final String AND = "&&", NOT = "!", OR = "||";
 
 	// Otros símbolos
-	protected static final String COLON = ":", COMMA = ",", DOT = ".", LEFT_BRACE = "{", LEFT_BRACKET = "[",
+	protected static final String TERNARY_OPERATOR = "?", COLON = ":", COMMA = ",", DOT = ".", LEFT_BRACE = "{", LEFT_BRACKET = "[",
 			LEFT_PAREN = "(", RIGHT_BRACE = "}", RIGHT_BRACKET = "]", RIGHT_PAREN = ")", SEMICOLON = ";";
+	
+	//Cantidad maxima de tokens que se pueden leer
+	protected static final Integer MAX = 500;
 }

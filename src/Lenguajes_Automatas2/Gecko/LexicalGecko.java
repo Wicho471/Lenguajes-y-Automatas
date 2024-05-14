@@ -20,11 +20,11 @@ public class LexicalGecko extends LexicalUtility {
 
 	// Aqui se guardan las palabras reservadas
 	private final Lista<String> keyWords = new Lista<>(BEGIN, END, IF, ELSE, INTEGER, FLOAT, STRING, CHAR, BOOLEAN, FOR,
-			WHILE, DO, SWITCH, TRUE, FALSE, CONTINUE, RETURN, NEW, THIS, NULL, CASE, DEFAULT,BREAK); 
+			WHILE, DO, SWITCH, TRUE, FALSE, CONTINUE, RETURN, NEW, THIS, NULL, CASE, DEFAULT, BREAK);
 
 	// Aqui se guardan los posibles simbolos a leer
 	private final Lista<Character> symbolsList = new Lista<>('=', '<', '>', '(', ')', '{', '}', '[', ']', ':', '"',
-			'\'', ';'); // Aqui van los simbolos
+			'\'', ';', '?'); // Aqui van los simbolos
 
 	// Aqui van los operadores arimeticos
 	private final Lista<Character> artmieticOperator = new Lista<>('+', '-', '*', '/', '^', '%');
@@ -57,20 +57,19 @@ public class LexicalGecko extends LexicalUtility {
 				}
 			} else if (Character.isDigit(current)) { // Si el caracter actual es un digito
 				tokenTable.addToEnd(tokenizeNumberOrReal()); // Llama la funcion para tokenizar el numero
-
+				isOverflow();
 			} else if (Character.isLetter(current)) { // Si el caracter actual es una letra
-				tokenTable.addToEnd(tokenizeIdentifierOrKeyword()); // Manda llamar la funcion que verifica si es un Id
-																	// o
-																	// una palabra reservada
+				tokenTable.addToEnd(tokenizeIdentifierOrKeyword()); // Verifica si es un Id
+				isOverflow(); 
 			} else if (isSymbol(current)) { // Si el caracter actual es un simbolo
 				tokenTable.addToEnd(tokenizeOperatorOrSymbol()); // Se llama la funcion que verifica si es un operador o
-																	// es un symbolo
-
+				isOverflow(); // es un symbolo
 			} else { // Si ninguna de las anteriores se cumplio
-				throw new RuntimeException("Unexpected character: " + current); // Finaliza el programa porque el
+				throw new RuntimeException("Unknown character: " + current); // Finaliza el programa porque el
 																				// caracter no pudo ser identificado
 			}
 		}
+		isOverflow();
 		return tokenTable;
 	}
 
@@ -128,21 +127,21 @@ public class LexicalGecko extends LexicalUtility {
 	}
 
 	private myToken getString(char currentChar) {
-		StringBuilder value = new StringBuilder();
-		value.append(currentChar);
+		String value = ""+currentChar;
 		while (currentChar() != '"') {
-			value.append(consumeChar());
+			value+=consumeChar();
 		}
-		value.append(consumeChar());
-		return new myToken(STRING, value.toString(), row, String.valueOf(value), col++);
+		value+=consumeChar();
+		return new myToken(STRING, value, row, value, col++);
 	}
 
 	private myToken getChar(char currentChar) {
-		StringBuilder value = new StringBuilder();
-		value.append(currentChar); // La primera coma simple
-		value.append(consumeChar());
-		value.append(consumeChar());
-		return new myToken(CHAR, value.toString(), row, String.valueOf(value), col++);
+		String value = ""+currentChar;
+		while (currentChar() != '\'') {
+			value+=consumeChar();
+		}
+		value+=consumeChar();
+		return new myToken(CHAR, value, row, value, col++);
 	}
 
 	// Metodos para la obtencion de caracteres
@@ -192,5 +191,11 @@ public class LexicalGecko extends LexicalUtility {
 
 	public void printInput() {
 		printInput(this.input);
+	}
+
+	private void isOverflow() { //Verifica que no se haya excedido la capasidad maxima de tokens
+		if (tokenTable.getSize() > MAX) {
+			throw new OutOfMemoryError("Capacidad de tokens excedida: MAX->" + MAX);
+		}
 	}
 }

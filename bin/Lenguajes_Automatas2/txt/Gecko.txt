@@ -1,6 +1,6 @@
 /*
 * Programa de prueba para verificar la correcta funcionalidad de todas las producciones sintácticas
-* del lenguaje de programación Gecko.
+* de mi lenguaje de programacion "Gecko".
 */
 Begin
     // Declaraciones de variables con inicialización
@@ -8,10 +8,16 @@ Begin
     Float decimal = 3.14;
     String texto = "Hola Mundo";
     Character letra = 'A';
-    Boolean verdad = True;
+    Boolean verdad = true;
 
     // Declaración sin asignación inicial
     Integer sinValor;
+	
+	sinValor = 1;
+	
+	sinValor++; 
+	
+	sinValor--; 
 
     // Operadores aritméticos
     Integer suma = 5 + 3;
@@ -27,7 +33,10 @@ Begin
     Boolean comparacion4 = (8 > 6);
     Boolean comparacion5 = (9 <= 9);
     Boolean comparacion6 = (10 >= 10);
-    Boolean logico = (True && False) || !False;
+    Boolean logico = (true && false) || !false;
+
+	//Operadores ternarios
+	Boolean ternario = (logico == false) ? false : true;
 
     // Estructuras de control If-ElseIf-Else
     if (entero == 42) {
@@ -44,10 +53,11 @@ Begin
     }
 
     // Ciclo While
-    while (verdad == True) {
-        verdad = False;  // Cambio de condición para evitar un ciclo infinito
+    while (verdad == true) {
+        verdad = false;  // Cambio de condición para evitar un ciclo infinito
     }
 
+	Integer contador;
     // Ciclo Do-While
     do {
         texto = texto + "!";

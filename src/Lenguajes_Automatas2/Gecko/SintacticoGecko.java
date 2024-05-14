@@ -17,27 +17,30 @@ import Utilidades.myToken;
  * 'for', 'while', 'do', 'switch', 'case', 'default', 'True', 'False', Tipos de
  * datos ('Integer', 'Float', 'String', 'Char', 'Boolean'), Identificadores,
  * Números, Operadores ('+', '-', '*', '/', '%', '^', '==', '!=', '<', '>',
- * '<=', '>=', '&&', '||', '!'), ';', '=', '++', '--', '"', '\''</li>
+ * '<=', '>=', '&&', '||', '!'), ';', '=', '++', '--', '"', '''</li>
  * 
  * <li>Producciones:
  * <ol>
  * <li>Gecko → 'Begin' Bloque 'End'</li>
+ * 
  * <li>Bloque → Bloque Sentencia | Sentencia</li>
+ * 
  * <li>Sentencia → Declaracion | Asignacion | If | For | While | DoWhile |
  * Switch</li>
+ * 
  * <li>Declaracion → Tipo Identificador '=' ValorInicial ';' || Tipo
  * Identificador ';'</li>
- * <li>Asignacion → Identificador '=' Expresion ';'</li>
  * 
- * <li>If → 'if' '(' Expresion ')' '{' Bloque '}' ElseIfPart ElsePart</li>
- * <li>ElseIfPart → ElseIfPart 'else if' '(' Expresion ')' '{' Bloque '}' |
- * ε</li>
- * <li>ElsePart → 'else' '{' Bloque '}' | ε</li>
+ * <li>Asignacion → Identificador '=' Expresion ';' || Incremento ';'</li>
+ * 
+ * <li>If → 'if' '(' Expresion ')' '{' Bloque '}' Else</li>
+ * <li>Else → 'else' '{' Bloque '}' || 'else' If || ε</li>
  * 
  * <li>For → 'for' '(' InicializacionFor ';' Expresion ';' PasoFor ')' '{'
  * Bloque '}'</li>
  * <li>InicializacionFor → Declaracion | Asignacion</li>
  * <li>PasoFor → Asignacion | Incremento</li>
+ * 
  * <li>Incremento → Identificador '++' | Identificador '--'</li>
  * 
  * <li>While → 'while' '(' Expresion ')' '{' Bloque '}'</li>
@@ -46,11 +49,13 @@ import Utilidades.myToken;
  * 
  * <li>Switch → 'switch' '(' Expresion ')' '{' Casos '}'</li>
  * <li>Casos → Casos Caso | Caso | ε</li>
- * <li>Caso → 'case' Valor ':' Bloque | 'default' ':' Bloque</li>
+ * <li>Caso → 'case' Valor ':' Bloque 'break' ';' | 'default' ':' Bloque 'break'
+ * ';'</li>
  * 
  * <li>Expresion → Expresion OperadorAritmetico Expresion | Expresion
  * OperadorComparacion Expresion | Expresion OperadorLogico Expresion | '!'
- * Expresion | '(' Expresion ')' | Numero | Identificador</li>
+ * Expresion | Expresion '?' Expresion ':' Expresion ';' | '(' Expresion ')' |
+ * Numero | Identificador</li>
  * 
  * <li>OperadorAritmetico → '+' | '-' | '*' | '/' | '%'</li>
  * <li>OperadorComparacion → '==' | '!=' | '<' | '>' | '<=' | '>='</li>
@@ -80,20 +85,23 @@ import Utilidades.myToken;
  * <li>'\'' . '\'' → esta expresión regular coincide con cualquier cadena que
  * comience y termine con una comilla simple y tenga un solo carácter en el
  * medio</li>
- * <ul>
+ * </ul>
  * 
  * @author Luis Emmanuel Torres Olvera
+ * @see Constantes
  * @apiNote Analiza sintacticamente, condicionales (if, else, switch), ciclos de
  *          control (for, while, do while), operadores aritmeticos
- *          (+,-,*,/,%,^), operadores de comparacion(==,>=,<=,!=,<,>),
+ *          (+,-,*,/,%,^,++,--), operadores de comparacion(==,>=,<=,!=,<,>),
  *          operadores de asignacion compuestos (+=,-=,*=,/=,%=,^=), operadores
  *          logicos (&&,||,!), operador de asignacion (=) operadores ternarios
  *          (?,:) y tipos de variables (String, Character, Integer, Boolean,
  *          Float)
+ * 
  */
 public class SintacticoGecko extends StringHandler {
 
 	public static void main(String[] args) throws Exception {
+		long tiempoInicio = System.currentTimeMillis();
 
 		LexicalGecko lexical = new LexicalGecko("src\\Lenguajes_Automatas2\\txt\\Gecko.txt");
 		lexical.printInput();
@@ -102,35 +110,34 @@ public class SintacticoGecko extends StringHandler {
 		SintacticoGecko sintactico = new SintacticoGecko(lexical);
 		sintactico.syntaxAnalysis(); // Metodo para inciar el analisis sintactico
 
-		System.out.println("\nLa sintaxis es correcta :D");
-	}
-
-	public SintacticoGecko(LexicalGecko Lexico) {
-		Lista<myToken> table = Lexico.getTokenTable();
-		for (int i = 0; i < table.getSize(); i++) {
-			tokenList.addToEnd(table.getElement(i).getToken());
-		}
-
+		long tiempoFin = System.currentTimeMillis();
+		long tiempoTotal = tiempoFin - tiempoInicio;
+		System.out.println("El tiempo total de ejecución es: " + tiempoTotal + " milisegundos");
 	}
 
 	// Lista de tokens a analizar y su index actual
-	private static Lista<String> tokenList = new Lista<String>();
+	Lista<myToken> tokenList = new Lista<myToken>();
 	private static int pos = 0;
+
+	public SintacticoGecko(LexicalGecko Lexico) {
+		this.tokenList = Lexico.getTokenTable();
+	}
 
 	// Produccionnes
 	private void syntaxAnalysis() { // Produccion Gecko
 		match(BEGIN);
 		parseBlock();
 		match(END);
+		System.out.println("\nLa sintaxis es correcta :D");
 	}
 
-	private static void parseBlock() { // Produccion bloque
+	private void parseBlock() { // Produccion bloque
 		while (!compareStrings(currentToken(), END) && !compareStrings(currentToken(), RIGHT_BRACE)) {
 			parseStatement();
 		}
 	}
 
-	private static void parseStatement() { // Produccion sentencia
+	private void parseStatement() { // Produccion sentencia
 		String token = currentToken();
 		if (isDataType(token)) {
 			parseDeclaration();
@@ -152,7 +159,7 @@ public class SintacticoGecko extends StringHandler {
 		}
 	}
 
-	private static void parseDeclaration() { // Produccion declaracion
+	private void parseDeclaration() { // Produccion declaracion
 		match(currentToken());
 		match(IDENTIFIER);
 		if (compareStrings(currentToken(), SEMICOLON)) {
@@ -164,14 +171,18 @@ public class SintacticoGecko extends StringHandler {
 		}
 	}
 
-	private static void parseAssignment() { // Produccion asginacion
+	private void parseAssignment() { // Produccion asginacion
 		match(currentToken());
-		match(ASSIGN); // '='
-		parseExpression();
+		if (compareStrings(currentToken(), INCREMENT) || compareStrings(currentToken(), DECREMENT)) {
+			match(currentToken()); // ++ ó --
+		} else {
+			match(ASSIGN); // '='
+			parseExpression();
+		}
 		match(SEMICOLON); // ';'
 	}
 
-	private static void parseIf() { // Produccion if
+	private void parseIf() { // Produccion if
 		match(IF);
 		match(LEFT_PAREN); // '('
 		parseExpression();
@@ -184,7 +195,7 @@ public class SintacticoGecko extends StringHandler {
 		}
 	}
 
-	private static void parseElse() { // Produccion else
+	private void parseElse() { // Produccion else
 		match(ELSE);
 		if (compareStrings(currentToken(), IF)) {
 			parseIf();
@@ -196,7 +207,7 @@ public class SintacticoGecko extends StringHandler {
 	}
 
 	// Metodos para for
-	private static void parseFor() { // Produccion for
+	private void parseFor() { // Produccion for
 		match(FOR);
 		match(LEFT_PAREN); // '('
 		parseIniFor();
@@ -210,23 +221,23 @@ public class SintacticoGecko extends StringHandler {
 		match(RIGHT_BRACE); // '}'
 	}
 
-	private static void parseIniFor() {
+	private void parseIniFor() {
 		String token = currentToken();
 		if (isDataType(token)) {
 			match(token);
 			match(IDENTIFIER);
 			match(ASSIGN);
-			parseArithmeticExpression();
+			parseExpression();
 		} else if (compareStrings(token, IDENTIFIER)) {
 			match(IDENTIFIER);
 			match(ASSIGN);
-			parseArithmeticExpression();
+			parseExpression();
 		} else {
 			throw new RuntimeException("Unexpected token in expression: " + currentToken());
 		}
 	}
 
-	private static void parseStepFor() {
+	private void parseStepFor() {
 		match(IDENTIFIER);
 		String token = currentToken();
 		if (compareStrings(token, INCREMENT) || compareStrings(token, DECREMENT)) {
@@ -240,7 +251,7 @@ public class SintacticoGecko extends StringHandler {
 	}
 	// Aqui termina las producciones de for
 
-	private static void parseWhile() { // Produccion while
+	private void parseWhile() { // Produccion while
 		match(WHILE);
 		match(LEFT_PAREN); // '('
 		parseExpression();
@@ -251,7 +262,7 @@ public class SintacticoGecko extends StringHandler {
 
 	}
 
-	private static void parseDoWhile() { // Produccion do while
+	private void parseDoWhile() { // Produccion do while
 		match(DO);
 		match(LEFT_BRACE); // '{'
 		parseBlock();
@@ -264,7 +275,7 @@ public class SintacticoGecko extends StringHandler {
 
 	}
 
-	private static void parseSwitch() { // Produccion switch
+	private void parseSwitch() { // Produccion switch
 		match(SWITCH);
 		match(LEFT_PAREN); // ')'
 		parseExpression();
@@ -294,11 +305,17 @@ public class SintacticoGecko extends StringHandler {
 	}
 
 	// Producciones para las expresiones
-	private static void parseExpression() {
+	private void parseExpression() {
 		parseLogicalExpression();
+		if (compareStrings(currentToken(), TERNARY_OPERATOR)) {
+			match(TERNARY_OPERATOR); // Match ?
+			parseExpression(); // Evalúa la expresión verdadera
+			match(COLON); // Match :
+			parseExpression(); // Evalúa la expresión falsa
+		}
 	}
 
-	private static void parseLogicalExpression() {
+	private void parseLogicalExpression() {
 		parseComparisonExpression();
 		while (currentToken().equals(AND) || currentToken().equals(OR)) {
 			match(currentToken()); // Match && or ||
@@ -306,7 +323,7 @@ public class SintacticoGecko extends StringHandler {
 		}
 	}
 
-	private static void parseComparisonExpression() {
+	private void parseComparisonExpression() {
 		parseArithmeticExpression();
 		while (isComparisonOperator(currentToken())) {
 			match(currentToken()); // Match ==, !=, <, <=, >, >=
@@ -314,7 +331,7 @@ public class SintacticoGecko extends StringHandler {
 		}
 	}
 
-	private static void parseArithmeticExpression() {
+	private void parseArithmeticExpression() {
 		parseTerm();
 		while (compareStrings(currentToken(), PLUS) || compareStrings(currentToken(), MINUS)) {
 			match(currentToken()); // Match + or -
@@ -322,7 +339,7 @@ public class SintacticoGecko extends StringHandler {
 		}
 	}
 
-	private static void parseTerm() {
+	private void parseTerm() {
 		parseFactor();
 		while (compareStrings(currentToken(), TIMES) || compareStrings(currentToken(), DIVIDE)
 				|| compareStrings(currentToken(), MODULO)) {
@@ -331,7 +348,7 @@ public class SintacticoGecko extends StringHandler {
 		}
 	}
 
-	private static void parseFactor() {
+	private void parseFactor() {
 		String token = currentToken();
 		if (compareStrings(token, NOT)) {
 			match(NOT); // Match !
@@ -340,7 +357,8 @@ public class SintacticoGecko extends StringHandler {
 			match(LEFT_PAREN); // Match (
 			parseExpression();
 			match(RIGHT_PAREN); // Match )
-		} else if (isDataType(token) || compareStrings(token, IDENTIFIER)) {
+		} else if (isDataType(token) || compareStrings(token, IDENTIFIER) || compareStrings(token, TRUE)
+				|| compareStrings(token, FALSE)) {
 			match(token); // Match number or identifier
 		} else {
 			throw new RuntimeException("Unexpected token in expression: " + token);
@@ -353,7 +371,7 @@ public class SintacticoGecko extends StringHandler {
 	 * 
 	 * @param expectedToken
 	 */
-	private static void match(String expectedToken) {
+	private void match(String expectedToken) {
 		String currentToken = currentToken();
 		if (compareStrings(expectedToken, currentToken)) {
 			pos++;
@@ -365,8 +383,8 @@ public class SintacticoGecko extends StringHandler {
 
 	}
 
-	private static String currentToken() {
-		return tokenList.getElement(pos);
+	private String currentToken() {
+		return tokenList.getElement(pos).getToken();
 	}
 
 	// Metodos booleanos

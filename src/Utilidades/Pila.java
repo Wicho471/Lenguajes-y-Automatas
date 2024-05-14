@@ -127,4 +127,8 @@ public class Pila<E> {
 	public int getSize() {
 		return this.top;
 	}
+	
+	public E get(int index) {
+		return this.List.getElement(index);
+	}
 }
