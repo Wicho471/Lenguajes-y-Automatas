@@ -90,12 +90,8 @@ public class nodoLista<E> {
 	}
 
 	/**
-	 * <p>
 	 * Obtiene la referencia al siguiente nodo en la lista.
-	 * </p>
-	 * <p>
 	 * Este es el uno de los metodos, si no es que el mas importante de esta clase
-	 * </p>
 	 * 
 	 * @return El siguiente nodo en la lista, o null si no hay siguiente.
 	 */

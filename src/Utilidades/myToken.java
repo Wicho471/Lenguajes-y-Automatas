@@ -170,4 +170,16 @@ public class myToken {
 	public Integer getCol() {
 		return this.col;
 	}
+	
+	/**
+	 * Obtiene todos las lineas 
+	 * @return Una cadena con todas las lineas
+	 */
+	public String linesToString() {
+		String aux = "";
+		for (int i = 0; i < rows.getSize(); i++) {
+			aux+=""+rows.getElement(i);
+		}
+		return aux;
+	}
 }

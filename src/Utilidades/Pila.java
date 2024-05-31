@@ -128,7 +128,17 @@ public class Pila<E> {
 		return this.top;
 	}
 	
+	/**
+	 * Se obtiene el elemento segun el index
+	 * @param index
+	 * @return El elemento del index
+	 */
 	public E get(int index) {
+		if (index > List.getSize()) {
+			throw new IndexOutOfBoundsException("Index fuera de rango "+index);
+		} else if (isEmpty()) {
+			throw new EmptyStackException();
+		}
 		return this.List.getElement(index);
 	}
 }

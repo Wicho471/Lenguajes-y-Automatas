@@ -1,0 +1,14 @@
+Begin
+   int a;
+   int b;
+   a = 10;
+   b = a * (10 + a)*5;
+   if(b+10==1000){
+   	b = 1000;
+   } else {
+   	b = 100 * 10 + 1;
+   	while (b > 0) {
+   		b = b - 1;
+ 	  }
+   }
+End

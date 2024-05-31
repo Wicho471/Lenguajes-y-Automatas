@@ -4,60 +4,58 @@
 */
 Begin
     // Declaraciones de variables con inicialización
-    Integer entero = 42;
-    Float decimal = 3.14;
-    String texto = "Hola Mundo";
-    Character letra = 'A';
-    Boolean verdad = true;
-
-    // Declaración sin asignación inicial
-    Integer sinValor;
-	
-	sinValor = 1;
-	
-	sinValor++; 
-	
-	sinValor--; 
+    int entero = 10;
+    entero = 20;
+    float decimal = 3.14;
+    str texto = "Hola Mundo";
+    char letra = 'A';
+    bool verdad = true;
+	verdad = 42 < 15;
 
     // Operadores aritméticos
-    Integer suma = 5 + 3;
-    Integer resta = 10 - 2;
-    Integer multiplicacion = 4 * 2;
-    Integer division = 20 / 5;
-    Integer modulo = 7 % 3;
+    int suma = 5 + 3;
+    int resta = 10 - 2;
+    int multiplicacion = 4 * 2;
+    int division = 20 / 5;
+    int modulo = 7 % 3;
 
     // Operadores de comparación y lógicos
-    Boolean comparacion1 = (5 == 5);
-    Boolean comparacion2 = (3 != 4);
-    Boolean comparacion3 = (7 < 10);
-    Boolean comparacion4 = (8 > 6);
-    Boolean comparacion5 = (9 <= 9);
-    Boolean comparacion6 = (10 >= 10);
-    Boolean logico = (true && false) || !false;
+    bool comparacion1 = (5 == 5);
+    bool comparacion2 = (3 != 4);
+    bool comparacion3 = (7 < 10);
+    bool comparacion4 = (8 > 6);
+    bool comparacion5 = (9 <= 9);
+    bool comparacion6 = (10 >= 10);
+    bool logico = (true && false) || !false;
 
 	//Operadores ternarios
-	Boolean ternario = (logico == false) ? false : true;
+	bool ternario = (logico == false) ? false : true;
 
     // Estructuras de control If-ElseIf-Else
     if (entero == 42) {
         texto = "El valor es 42";
+        str nuevaCadena = "var dentro del bloque"; //Semantica de alcance
+    } else if (entero < 42) {
+        texto = "El valor es menor que 42";
     } else if (entero < 42) {
         texto = "El valor es menor que 42";
     } else {
         texto = "El valor es mayor que 42";
     }
+	str nuevaCadena = "var fuera del bloque"; //Semantica de alcance
 
     // Ciclo For con inicialización, condición y paso
-    for (Integer i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; i = i + 1) {
         entero = entero + 1;
     }
-
+	
+	
     // Ciclo While
     while (verdad == true) {
         verdad = false;  // Cambio de condición para evitar un ciclo infinito
     }
 
-	Integer contador;
+	int contador;
     // Ciclo Do-While
     do {
         texto = texto + "!";

@@ -42,6 +42,7 @@ public class Lista<E> {
 	/**
 	 * Constructor que inicializa un vector de elementos.
 	 */
+	
 	public Lista(E... data) {
 		for (int i = 0; i < data.length; i++) {
 			addToEnd(data[i]);
@@ -380,7 +381,8 @@ public class Lista<E> {
 	}
 
 	/**
-	 * Imprime todos los elementos de la lista en consola.
+	 * Obtiene todos los elementos de la lista
+	 * @return Una cadena con todos los elementos de la lista
 	 */
 	public String listToString() {
 		String str = "";

@@ -1,7 +1,3 @@
-/*
-* Programa de prueba para verificar la correcta funcionalidad de todas las producciones sintácticas
-* de mi lenguaje de programacion "Gecko".
-*/
 Begin
     // Declaraciones de variables con inicialización
     int entero = 10;
@@ -11,6 +7,11 @@ Begin
     char letra = 'A';
     bool verdad = true;
 	verdad = 42 < 15;
+    // Declaración sin asignación inicial
+    int sinValor;
+	
+	sinValor++; 
+	sinValor--; 
 
     // Operadores aritméticos
     int suma = 5 + 3;
@@ -42,13 +43,6 @@ Begin
     } else {
         texto = "El valor es mayor que 42";
     }
-	str nuevaCadena = "var fuera del bloque"; //Semantica de alcance
-
-    // Ciclo For con inicialización, condición y paso
-    for (int i = 0; i < 5; i = i + 1) {
-        entero = entero + 1;
-    }
-	
 	
     // Ciclo While
     while (verdad == true) {
@@ -77,4 +71,5 @@ Begin
             texto = "Otro valor";
 			break;    
     } 
+    
 End

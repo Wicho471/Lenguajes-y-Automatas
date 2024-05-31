@@ -18,7 +18,7 @@ public class LexicalUtility extends StringHandler {
 
 	protected static Lista<myToken> symbolTable = new Lista<myToken>();
 	protected static Lista<myToken> tokenTable = new Lista<myToken>();
-	
+
 	private final static char DELIMITER = ';';
 
 	// Lexical v1
@@ -33,7 +33,7 @@ public class LexicalUtility extends StringHandler {
 	 * @throws FileNotFoundException Si el archivo especificado en {@code dir} no
 	 *                               existe o no puede ser leído.
 	 */
-	protected static String getTextFile(String path) throws FileNotFoundException{
+	protected static String getTextFile(String path) throws FileNotFoundException {
 		String text = "";
 		File doc = new File(path);
 		Scanner read = null;
@@ -47,7 +47,7 @@ public class LexicalUtility extends StringHandler {
 			}
 		} catch (FileNotFoundException e) {
 			System.out.println("Archivo no encontrado en la dirección: " + path);
-			throw new FileNotFoundException(); //Se finaliza la ejecucion del programa
+			throw new FileNotFoundException(); // Se finaliza la ejecucion del programa
 		} finally {
 			if (read != null) {
 				read.close(); // Asegúrate de cerrar el Scanner para liberar recursos
@@ -117,8 +117,6 @@ public class LexicalUtility extends StringHandler {
 		}
 		return newString;
 	}
-
-	
 
 	// Lexical v5
 	/**
@@ -260,31 +258,33 @@ public class LexicalUtility extends StringHandler {
 	 *         líneas combinadas en un solo token por lexema.
 	 */
 	protected static Lista<myToken> getSymbolTable(Lista<myToken> table) {
-	    Lista<myToken> uniqueTokens = new Lista<>(); // Lista para almacenar tokens consolidados.
-	    
-	    for (int i = 0; i < table.getSize(); i++) {
-	        myToken currentToken = table.getElement(i);
-	        boolean found = false;
+		Lista<myToken> uniqueTokens = new Lista<>(); // Lista para almacenar tokens consolidados.
 
-	        // Buscar en la lista de tokens únicos para ver si el lexema ya está.
-	        for (int j = 0; j < uniqueTokens.getSize(); j++) {
-	            myToken existingToken = uniqueTokens.getElement(j);
-	            if (compareStrings(existingToken.getLexeme(), currentToken.getLexeme())) {
-	                // Si el lexema ya existe, añadir todas las líneas del token actual al token existente.
-	                existingToken.addLine(currentToken.getLines());
-	                found = true;
-	                break;
-	            }
-	        }
+		for (int i = 0; i < table.getSize(); i++) {
+			myToken currentToken = table.getElement(i);
+			boolean found = false;
 
-	        if (!found) {
-	            // Si el lexema no está en uniqueTokens, añadir el token a la lista.
-	            myToken newToken = new myToken(currentToken.getToken(), currentToken.getLexeme(), currentToken.getLines(), currentToken.getValue());
-	            uniqueTokens.addToEnd(newToken);
-	        }
-	    }
-	    symbolTable = uniqueTokens;
-	    return uniqueTokens;
+			// Buscar en la lista de tokens únicos para ver si el lexema ya está.
+			for (int j = 0; j < uniqueTokens.getSize(); j++) {
+				myToken existingToken = uniqueTokens.getElement(j);
+				if (compareStrings(existingToken.getLexeme(), currentToken.getLexeme())) {
+					// Si el lexema ya existe, añadir todas las líneas del token actual al token
+					// existente.
+					existingToken.addLine(currentToken.getLines());
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+				// Si el lexema no está en uniqueTokens, añadir el token a la lista.
+				myToken newToken = new myToken(currentToken.getToken(), currentToken.getLexeme(),
+						currentToken.getLines(), currentToken.getValue());
+				uniqueTokens.addToEnd(newToken);
+			}
+		}
+		symbolTable = uniqueTokens;
+		return uniqueTokens;
 	}
 
 	/**
@@ -313,11 +313,11 @@ public class LexicalUtility extends StringHandler {
 	 * </ol>
 	 * 
 	 * @param table Lista de tokens que se imprimirán en la tabla. Cada token debe
-	 *               tener un tipo de token, un lexema, una lista de líneas y un
-	 *               valor opcional.
+	 *              tener un tipo de token, un lexema, una lista de líneas y un
+	 *              valor opcional.
 	 */
 	public static void printTable(Lista<myToken> table) {
-		 
+
 		int maxTokenLen = "Token".length();
 		int maxLexemeLen = "Lexema".length();
 		int maxLinesLen = "Líneas".length();
@@ -339,9 +339,8 @@ public class LexicalUtility extends StringHandler {
 		}
 
 		// Encabezados de la tabla
-		System.out.printf(
-				"%-5s %-" + maxTokenLen + "s  %-" + maxLexemeLen + "s  %-" + maxLinesLen + "s  %-" + maxColumLen +"s  %-" + maxValueLen + "s%n",
-				"No.", "Token", "Lexema", "Líneas", "Columna", "Valor");
+		System.out.printf("%-5s %-" + maxTokenLen + "s  %-" + maxLexemeLen + "s  %-" + maxLinesLen + "s  %-"
+				+ maxColumLen + "s  %-" + maxValueLen + "s%n", "No.", "Token", "Lexema", "Líneas", "Columna", "Valor");
 
 		// Imprimir los datos de cada token en la lista
 		for (int i = 0; i < table.getSize(); i++) {
@@ -349,17 +348,19 @@ public class LexicalUtility extends StringHandler {
 			String valueString = (token.getValue() == null) ? "N/A" : token.getValue();
 			String valueString2 = (token.getCol() == null) ? "N/A" : Integer.toString(token.getCol());
 			System.out.printf(
-					"%-5d %-" + maxTokenLen + "s  %-" + maxLexemeLen + "s  %-" + maxLinesLen + "s  %-" + maxColumLen +"s  %-" + maxValueLen + "s%n",
-					(i+1),token.getToken(), token.getLexeme(), token.getLines().listToString(), valueString2, valueString);
+					"%-5d %-" + maxTokenLen + "s  %-" + maxLexemeLen + "s  %-" + maxLinesLen + "s  %-" + maxColumLen
+							+ "s  %-" + maxValueLen + "s%n",
+					(i + 1), token.getToken(), token.getLexeme(), token.getLines().listToString(), valueString2,
+					valueString);
 		}
 	}
-	
+
 	public static void printInput(String input) {
 		Scanner read = new Scanner(input);
 		int index = 1;
 		System.out.println("--------------------Input--------------------");
 		while (read.hasNextLine()) {
-			System.out.println(index+".- "+read.nextLine());
+			System.out.println(index + ".- " + read.nextLine());
 			index++;
 		}
 		read.close();

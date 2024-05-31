@@ -20,7 +20,7 @@ package Utilidades;
  * @author Luis Emmanuel Torres Olvera
  * @version 1.0
  */
-public class StringHandler extends Constanes{
+public class StringHandler extends Constantes{
 
 	/**
 	 * Verifica si cada carácter de la cadena dada está contenido en un conjunto de

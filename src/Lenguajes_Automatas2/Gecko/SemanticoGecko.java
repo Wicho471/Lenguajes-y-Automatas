@@ -8,97 +8,13 @@ import Utilidades.myToken;
 import Utilidades.Pila;
 
 /**
- * <h1>Gramática Libre de Contexto para el Lenguaje de Programación Gecko</h1>
- * <ul>
- * <li>Símbolos No Terminales: Programa, Bloque, Sentencia, Declaracion,
- * Asignacion, If, ElseIfPart, ElsePart, For, InicializacionFor, PasoFor,
- * Incremento, While, DoWhile, Switch, Casos, Caso, Expresion,
- * OperadorAritmetico, OperadorComparacion, OperadorLogico, Tipo, ValorInicial,
- * Numero, NumeroConPunto, CadenaDeTexto, Caracter, ValorBooleano</li>
- * 
- * <li>Símbolos Terminales: 'Begin', 'End', 'if', 'else', 'else if', '{', '}',
- * 'for', 'while', 'do', 'switch', 'case', 'default', 'True', 'False', Tipos de
- * datos ('Integer', 'Float', 'String', 'Char', 'Boolean'), Identificadores,
- * Números, Operadores ('+', '-', '*', '/', '%', '^', '==', '!=', '<', '>',
- * '<=', '>=', '&&', '||', '!'), ';', '=', '++', '--', '"', '''</li>
- * 
- * <li>Producciones:
- * <ol>
- * <li>Gecko → 'Begin' Bloque 'End'</li>
- * 
- * <li>Bloque → Bloque Sentencia | Sentencia</li>
- * 
- * <li>Sentencia → Declaracion | Asignacion | If | For | While | DoWhile |
- * Switch</li>
- * 
- * <li>Declaracion → Tipo Identificador '=' ValorInicial ';' || Tipo
- * Identificador ';'</li>
- * 
- * <li>Asignacion → Identificador '=' Expresion ';' || Incremento ';'</li>
- * 
- * <li>If → 'if' '(' Expresion ')' '{' Bloque '}' Else</li>
- * <li>Else → 'else' '{' Bloque '}' || 'else' If || ε</li>
- * 
- * <li>For → 'for' '(' InicializacionFor ';' Expresion ';' PasoFor ')' '{'
- * Bloque '}'</li>
- * <li>InicializacionFor → Declaracion | Asignacion</li>
- * <li>PasoFor → Asignacion | Incremento</li>
- * 
- * <li>Incremento → Identificador '++' | Identificador '--'</li>
- * 
- * <li>While → 'while' '(' Expresion ')' '{' Bloque '}'</li>
- * 
- * <li>DoWhile → 'do' '{' Bloque '}' 'while' '(' Expresion ')' ';'</li>
- * 
- * <li>Switch → 'switch' '(' Expresion ')' '{' Casos '}'</li>
- * <li>Casos → Casos Caso | Caso | ε</li>
- * <li>Caso → 'case' Valor ':' Bloque 'break' ';' | 'default' ':' Bloque 'break'
- * ';'</li>
- * 
- * <li>Expresion → Expresion OperadorAritmetico Expresion | Expresion
- * OperadorComparacion Expresion | Expresion OperadorLogico Expresion | '!'
- * Expresion | Expresion '?' Expresion ':' Expresion ';' | '(' Expresion ')' |
- * Numero | Identificador</li>
- * 
- * <li>OperadorAritmetico → '+' | '-' | '*' | '/' | '%'</li>
- * <li>OperadorComparacion → '==' | '!=' | '<' | '>' | '<=' | '>='</li>
- * <li>OperadorLogico → '&&' | '||'</li>
- * <li>Tipo → 'Integer' | 'Float' | 'String' | 'Character' | 'Boolean'</li>
- * <li>ValorInicial → Numero | NumeroConPunto | CadenaDeTexto | Caracter |
- * ValorBooleano</li>
- * <li>Numero → '[0-9]+'</li>
- * <li>NumeroConPunto → '[0-9]*' '.' '[0-9]+'</li>
- * <li>CadenaDeTexto → '"' [^"]* '"'</li>
- * <li>Caracter → '\'' . '\''</li>
- * <li>ValorBooleano → 'True' | 'False'</li>
- * </ol>
- * </li>
- * 
- * <li>Símbolo inicial: Gecko</li>
- * </ul>
- * 
- * <ul>
- * Descripcion de las expresiones regulares
- * <li>[^"]* → Coincidirá con cualquier secuencia de caracteres que no contenga
- * comillas dobles.</li>
- * <li>[0-9]* → Coincidirá con cualquier secuencia de caracteres que contenga
- * cero o más dígitos del 0 al 9</li>
- * <li>[0-9]+ → Coincidirá con cualquier secuencia de caracteres que contenga
- * uno o más dígitos del 0 al 9.</li>
- * <li>'\'' . '\'' → esta expresión regular coincide con cualquier cadena que
- * comience y termine con una comilla simple y tenga un solo carácter en el
- * medio</li>
- * </ul>
- * 
  * @author Luis Emmanuel Torres Olvera
  * @see Constantes
- * @apiNote Analiza sintacticamente, condicionales (if, else, switch), ciclos de
- *          control (for, while, do while), operadores aritmeticos
- *          (+,-,*,/,%,^,++,--), operadores de comparacion(==,>=,<=,!=,<,>),
- *          operadores de asignacion compuestos (+=,-=,*=,/=,%=,^=), operadores
- *          logicos (&&,||,!), operador de asignacion (=) operadores ternarios
- *          (?,:) y tipos de variables (String, Character, Integer, Boolean,
- *          Float)
+ * @apiNote Analiza sintacticamente y semanticamente segun las siguientes reglas
+ * 			1.- Las variables deben de estar declaradas
+ * 			2.- Las variables no deben de estad duplicadas
+ * 			3.- Debe de haber compatibilidad en lo datos
+ * 			4.- Debe existir en alcance de las variables
  * 
  */
 public class SemanticoGecko extends StringHandler {
@@ -106,28 +22,29 @@ public class SemanticoGecko extends StringHandler {
 	public static void main(String[] args) throws Exception {
 		long tiempoInicio = System.currentTimeMillis();
 
-		LexicalGecko lexical = new LexicalGecko("src\\Lenguajes_Automatas2\\txt\\Gecko.txt");
-		 lexical.printInput();
-		lexical.printTokenTable();
+		LexicalGecko lexical = new LexicalGecko("src\\Lenguajes_Automatas2\\txt\\Gecko3.txt");
+		//lexical.printInput();
+		//lexical.printTokenTable();
 		// lexical.printSymbolTable();
 		SemanticoGecko sintactico = new SemanticoGecko(lexical);
 		sintactico.syntaxAnalysis(); // Metodo para inciar el analisis sintactico
-
+		
 		long tiempoFin = System.currentTimeMillis();
 		long tiempoTotal = tiempoFin - tiempoInicio;
-		System.out.println("El tiempo total de ejecución es: " + tiempoTotal + " milisegundos");
+		System.out.println("\nEl tiempo total de ejecución es: " + tiempoTotal + " milisegundos");
 	}
 
 	// Lista de tokens a analizar y su index actual
-	private Pila<HashMap<String, String>> symbolTables = new Pila<>();
-	Lista<myToken> tokenList = new Lista<myToken>();
+	private Lista<myToken> tokenList;
+	private Pila<HashMap<String, String>> symbolTables; // SEMANTICO -> Tablas de simbolos
 	private static int pos = 0;
 
 	public SemanticoGecko(LexicalGecko Lexico) {
 		this.tokenList = Lexico.getTokenTable();
+		this.symbolTables = new Pila<>(); // SEMANTICO -> Tablas de simbolos
 	}
 
-	// Nuevos metodos semanticos
+	//Entrar en el alcance de una variable
 	private void enterScope() {
 		symbolTables.push(new HashMap<>());
 	}
@@ -139,13 +56,15 @@ public class SemanticoGecko extends StringHandler {
 
 	// Declarar una variable en el alcance actual
 	private void declareVariable(String identifier, String type) {
-		HashMap<String, String> currentTable = symbolTables.peek();
-		if (currentTable.containsKey(identifier)) {
-			throw new RuntimeException(
-					"Variable '" + identifier + "' already declared in this scope, Token ->" + pos);
+		for (int i = symbolTables.getSize() - 1; i >= 0; i--) {
+			HashMap<String, String> table = symbolTables.get(i);
+			if (table.containsKey(identifier)) {
+				throw new RuntimeException(
+						"Variable '" + identifier + "' already declared in this scope, line ->" + currentLine());
+			}
 		}
-		System.out.println("Se declaro una variable id:" + identifier + " tipo:" + type);
-		currentTable.put(identifier, type);
+		
+		symbolTables.peek().put(identifier, dataTypeToLiteral(type));
 	}
 
 	// Buscar el tipo de una variable en los alcances disponibles
@@ -156,14 +75,14 @@ public class SemanticoGecko extends StringHandler {
 				return table.get(identifier);
 			}
 		}
-		throw new RuntimeException("Variable '" + identifier + "' not declared, Token ->" + pos);
+		throw new RuntimeException("Variable '" + identifier + "' not declared, line ->" + currentLine());
 	}
 
 	// Compatibilidad de datos
 	private void checkTypeCompatibility(String expectedType, String actualType) {
 		if (!expectedType.equals(actualType)) {
 			throw new RuntimeException("Type mismatch: cannot convert from " + expectedType + " to " + actualType
-					+ ", Token ->" + pos);
+					+ ", line ->" + currentLine());
 		}
 	}
 
@@ -176,17 +95,18 @@ public class SemanticoGecko extends StringHandler {
 	}
 
 	private void parseBlock() { // Produccion bloque
-		enterScope();
+		enterScope(); // SEMANTICO -> Entra en alcance 
 		while (!compareStrings(currentToken(), END) && !compareStrings(currentToken(), RIGHT_BRACE)) {
 			parseStatement();
 		}
-		exitScope();
+		exitScope(); // SEMANTICO -> Sale de alncance
 	}
 
 	private void parseStatement() { // Produccion sentencia
 		String token = currentToken();
 		if (isDataType(token)) {
 			parseDeclaration();
+			match(SEMICOLON);
 		} else if (compareStrings(token, IF)) {
 			parseIf();
 		} else if (compareStrings(token, FOR)) {
@@ -197,46 +117,39 @@ public class SemanticoGecko extends StringHandler {
 			parseDoWhile();
 		} else if (compareStrings(token, SWITCH)) {
 			parseSwitch();
-		} else if (compareStrings(token, BREAK) || compareStrings(token, CONTINUE)) {
-			match(token);
-			match(SEMICOLON);
 		} else {
 			parseAssignment();
+			match(SEMICOLON);
 		}
 	}
 
 	private void parseDeclaration() {
 		String type = currentToken();
-		System.out.println("Declaracion de tipo: " + type);
 		match(type);
-		String identifier = tokenList.getElement(pos).getLexeme();
+		String identifier = currentLexeme();
 		match(IDENTIFIER);
-		declareVariable(identifier, type); // SEMANTICO -> Declarar la variable
+		
+		declareVariable(identifier,type); // SEMANTICO -> Declarar la variable
 
 		if (compareStrings(currentToken(), ASSIGN)) {
 			match(ASSIGN);
 			String exprType = parseExpression();
-			System.out.println("Expresion de tipo: " + exprType);
-			checkTypeCompatibility(type, exprType); // SEMANTICO -> Compatibilidad de datos
-			match(SEMICOLON);
-		} else {
-			match(SEMICOLON);
+			checkTypeCompatibility(dataTypeToLiteral(type), exprType); // SEMANTICO -> Compatibilidad de datos
 		}
 	}
 
 	private void parseAssignment() { // Produccion asginacion
-		String identifier = tokenList.getElement(pos).getLexeme();
+		String identifier = currentLexeme();
 		String type = lookupVariable(identifier); // SEMANTICO -> Verifica la existencia de la var
 		match(IDENTIFIER);
 		if (compareStrings(currentToken(), INCREMENT) || compareStrings(currentToken(), DECREMENT)) {
-			checkTypeCompatibility(INTEGER, type); // SEMANTICO -> Compatibilidad de datos
+			checkTypeCompatibility(NUMBER, type); // SEMANTICO -> Compatibilidad de datos
 			match(currentToken()); // ++ ó --
 		} else {
 			match(ASSIGN); // '='
 			String exprType = parseExpression();
 			checkTypeCompatibility(type, exprType); // SEMANTICO -> Compatibilidad de datos
 		}
-		match(SEMICOLON); // ';'
 	}
 
 	private void parseIf() { // Produccion if
@@ -268,57 +181,17 @@ public class SemanticoGecko extends StringHandler {
 	private void parseFor() { // Produccion for
 		match(FOR);
 		match(LEFT_PAREN); // '('
-		parseIniFor();
+		parseDeclaration();
 		match(SEMICOLON); // ';'
 		String exprType = parseExpression();
 		checkTypeCompatibility(BOOLEAN, exprType); // SEMANTICO -> Compatibilidad de datos
 		match(SEMICOLON); // ';'
-		parseStepFor();
+		parseAssignment();
 		match(RIGHT_PAREN); // ')'
 		match(LEFT_BRACE); // '{'
 		parseBlock();
 		match(RIGHT_BRACE); // '}'
 	}
-
-	private void parseIniFor() {
-		String token = currentToken();
-		if (isDataType(token)) {
-			String type = currentToken();
-			match(type);
-			String identifier = tokenList.getElement(pos).getLexeme();
-			match(IDENTIFIER);
-			declareVariable(identifier, type); // SEMANTICO -> Declarar la variable
-			match(ASSIGN);
-			String exprType = parseExpression();
-			checkTypeCompatibility(type, exprType); // SEMANTICO -> Compatibilidad de datos
-		} else if (compareStrings(token, IDENTIFIER)) {
-			String type = lookupVariable(tokenList.getElement(pos).getLexeme()); // SEMANTICO -> Verifica la existencia de la var
-			match(IDENTIFIER);
-			match(ASSIGN);
-			String exprType = parseExpression();
-			checkTypeCompatibility(type, exprType); // SEMANTICO -> Compatibilidad de datos
-		} else {
-			throw new RuntimeException("Unexpected token in expression: " + currentToken());
-		}
-	}
-
-	private void parseStepFor() {
-		String identifier = tokenList.getElement(pos).getLexeme();
-		String type = lookupVariable(identifier); // SEMANTICO -> Verifica la existencia de la var
-		match(IDENTIFIER);
-		String token = currentToken();
-		if (compareStrings(token, INCREMENT) || compareStrings(token, DECREMENT)) {
-			checkTypeCompatibility(INTEGER, type); // SEMANTICO -> Compatibilidad de datos
-			match(token);
-		} else if (compareStrings(token, ASSIGN)) {
-			match(ASSIGN);
-			String exprType = parseExpression();
-			checkTypeCompatibility(type, exprType); // SEMANTICO -> Compatibilidad de datos
-		} else {
-			throw new RuntimeException("Unexpected token in expression: " + token);
-		}
-	}
-	// Aqui termina las producciones de for
 
 	private void parseWhile() { // Produccion while
 		match(WHILE);
@@ -348,13 +221,16 @@ public class SemanticoGecko extends StringHandler {
 
 	private void parseSwitch() { // Produccion switch
 		match(SWITCH);
-		match(LEFT_PAREN); // ')'
+		match(LEFT_PAREN); // '('
 		String exprType = parseExpression();
+		if (compareStrings(exprType, BOOLEAN)) { // SEMANTICO -> Compatibilidad de datos
+			throw new RuntimeException("Cannot switch on a value of type boolean. Only convertible int values, strings or enum variables are permitted");
+		}
 		match(RIGHT_PAREN); // ')'
 		match(LEFT_BRACE); // '{'
 		while (compareStrings(currentToken(), CASE) || compareStrings(currentToken(), DEFAULT)) {
 			if (compareStrings(currentToken(), CASE)) {
-				enterScope();
+				enterScope(); // SEMANTICO -> Entra en alcance 
 				match(CASE);
 				checkTypeCompatibility(currentToken(), exprType); // SEMANTICO -> Compatibilidad de datos
 				match(currentToken());
@@ -364,9 +240,9 @@ public class SemanticoGecko extends StringHandler {
 				}
 				match(BREAK);
 				match(SEMICOLON);
-				exitScope();
+				exitScope(); // SEMANTICO -> Sale de alncance
 			} else {
-				enterScope();
+				enterScope(); // SEMANTICO -> Entra en alcance 
 				match(DEFAULT);
 				match(COLON); // ':'
 				while (!compareStrings(currentToken(), BREAK)) {
@@ -374,7 +250,7 @@ public class SemanticoGecko extends StringHandler {
 				}
 				match(BREAK);
 				match(SEMICOLON);
-				exitScope();
+				exitScope(); // SEMANTICO -> Sale de alncance
 			}
 		}
 		match(RIGHT_BRACE); // }
@@ -389,27 +265,25 @@ public class SemanticoGecko extends StringHandler {
 			match(COLON); // Match :
 			String falseType = parseExpression();
 			if (!trueType.equals(falseType)) {
-				throw new RuntimeException("Type mismatch in ternary operator: " + trueType + " vs " + falseType);
+				throw new RuntimeException("Type mismatch in ternary operator: " + trueType + " vs " + falseType); // SEMANTICO -> Compatibilidad de datos
 			}
-			System.out.println("Desde operador ternario retorna: " + trueType);
 			return trueType; // El tipo de un operador ternario es el tipo de sus ramas verdadera y falsa
 		}
-		System.out.println("Desde parseExpression retorna: " + exprType);
 		return exprType;
 	}
 
 	// Método para analizar expresiones lógicas
 	private String parseLogicalExpression() {
-		boolean flag = false;
+		boolean isBool = false;
 		String leftType = parseComparisonExpression();
 		while (compareStrings(currentToken(), AND) || compareStrings(currentToken(), OR)) {
-			flag=true;
+			isBool=true;
 			match(currentToken());
 			String rightType = parseComparisonExpression();
 			checkTypeCompatibility(BOOLEAN, leftType); // SEMANTICO -> Compatibilidad de datos
 			checkTypeCompatibility(BOOLEAN, rightType); // SEMANTICO -> Compatibilidad de datos
 		}
-		if (flag) {
+		if (isBool) {
 			return BOOLEAN;
 		} else {
 			return leftType;
@@ -418,16 +292,16 @@ public class SemanticoGecko extends StringHandler {
 
 	// Método para analizar expresiones de comparación
 	private String parseComparisonExpression() {
-		boolean flag = false;
+		boolean isBool = false;
 		String leftType = parseArithmeticExpression();
 		while (isComparisonOperator(currentToken())) {
-			flag=true;
+			isBool=true;
 			match(currentToken());
 			String rightType = parseArithmeticExpression();
 			// Usualmente, las comparaciones resultan en un tipo booleano
 			checkTypeCompatibility(leftType, rightType); // SEMANTICO -> Compatibilidad de datos
 		}
-		if (flag) {
+		if (isBool) {
 			return BOOLEAN;
 		} else {
 			return leftType;
@@ -442,7 +316,6 @@ public class SemanticoGecko extends StringHandler {
 			String rightType = parseTerm();
 			checkTypeCompatibility(type, rightType); // SEMANTICO -> Compatibilidad de datos
 		}
-		System.out.println("Desde parseArithmeticExpression retorna: " + type);
 		return type; // El tipo de una expresión aritmética es el tipo de sus términos
 	}
 
@@ -455,7 +328,6 @@ public class SemanticoGecko extends StringHandler {
 			String rightType = parseFactor();
 			checkTypeCompatibility(type, rightType); // SEMANTICO -> Compatibilidad de datos
 		}
-		System.out.println("Desde parseTerm retorna: " + type);
 		return type;
 	}
 
@@ -472,12 +344,11 @@ public class SemanticoGecko extends StringHandler {
 			String type = parseExpression();
 			match(RIGHT_PAREN);
 			return type;
-		} else if (isDataType(token)) {
+		} else if (isLiteralType(token)) {
 			match(token);
-			System.out.println("Es un tipo de dato en la expresion: " + token);
 			return token; // Si es un tipo de dato, regresa el tipo
 		} else if (compareStrings(token, IDENTIFIER)) {
-			String identifier = tokenList.getElement(pos).getLexeme();
+			String identifier = currentLexeme();
 			match(IDENTIFIER);
 			String type = lookupVariable(identifier); // SEMANTICO -> Verifica la existencia de la var
 			return type; // Regresa el tipo de la variable
@@ -485,7 +356,7 @@ public class SemanticoGecko extends StringHandler {
 			match(token);
 			return BOOLEAN;
 		} else {
-			throw new RuntimeException("Unexpected token in expression: " + token);
+			throw new RuntimeException("Error de sintaxis, palabra reservada ('"+token+"') en lugar de una expresion, Token ->" + (pos + 1));
 		}
 	}
 
@@ -510,11 +381,41 @@ public class SemanticoGecko extends StringHandler {
 	private String currentToken() {
 		return tokenList.getElement(pos).getToken();
 	}
+	
+	private String currentLexeme() {
+		return tokenList.getElement(pos).getLexeme();
+	}
+	
+	private String currentLine() {
+		return tokenList.getElement(pos).linesToString();
+	}
 
+	private String dataTypeToLiteral(String dataType) {
+		if (compareStrings(dataType, INTEGER)) {
+			return NUMBER;
+		} else if (compareStrings(dataType, FLOAT)) {
+			return REAL;
+		}else if (compareStrings(dataType, STRING)) {
+			return TEXT;
+		}else if (compareStrings(dataType, CHAR)) {
+			return CHARACTER;
+		}else if (compareStrings(dataType, BOOL)) {
+			return BOOLEAN;
+		}else  {
+			throw new RuntimeException("Unknow data type: "+dataType);
+		}
+	}
+	
 	// Metodos booleanos
 	private static boolean isDataType(String token) {
 		return compareStrings(token, INTEGER) || compareStrings(token, FLOAT) || compareStrings(token, STRING)
-				|| compareStrings(token, CHAR) || compareStrings(token, BOOLEAN);
+				|| compareStrings(token, CHAR) || compareStrings(token, BOOL);
+	}
+	
+	private static boolean isLiteralType(String token) {
+		return compareStrings(token, NUMBER) || compareStrings(token, REAL) || compareStrings(token, TEXT)
+				|| compareStrings(token, CHARACTER) || compareStrings(token, BOOLEAN);
+
 	}
 
 	private static boolean isComparisonOperator(String token) {

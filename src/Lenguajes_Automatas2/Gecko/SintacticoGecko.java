@@ -1,5 +1,5 @@
 package Lenguajes_Automatas2.Gecko;
-
+	
 import Utilidades.Lista;
 import Utilidades.StringHandler;
 import Utilidades.myToken;
@@ -8,16 +8,17 @@ import Utilidades.myToken;
  * <h1>Gramática Libre de Contexto para el Lenguaje de Programación Gecko</h1>
  * <ul>
  * <li>Símbolos No Terminales: Programa, Bloque, Sentencia, Declaracion,
- * Asignacion, If, ElseIfPart, ElsePart, For, InicializacionFor, PasoFor,
- * Incremento, While, DoWhile, Switch, Casos, Caso, Expresion,
- * OperadorAritmetico, OperadorComparacion, OperadorLogico, Tipo, ValorInicial,
- * Numero, NumeroConPunto, CadenaDeTexto, Caracter, ValorBooleano</li>
+ * ListaVariables, VariableConInicializacion, Asignacion, ListaAsignacion, If,
+ * Else, For, Incremento, While, DoWhile, Switch, Casos, Caso, Expresion,
+ * AsignacionCompuesta, OperadorAritmetico, OperadorComparacion, OperadorLogico,
+ * Tipo, Valor</li>
  * 
- * <li>Símbolos Terminales: 'Begin', 'End', 'if', 'else', 'else if', '{', '}',
- * 'for', 'while', 'do', 'switch', 'case', 'default', 'True', 'False', Tipos de
- * datos ('Integer', 'Float', 'String', 'Char', 'Boolean'), Identificadores,
- * Números, Operadores ('+', '-', '*', '/', '%', '^', '==', '!=', '<', '>',
- * '<=', '>=', '&&', '||', '!'), ';', '=', '++', '--', '"', '''</li>
+ * <li>Símbolos Terminales: 'Begin', 'End', 'if', 'else', '{', '}', 'for',
+ * 'while', 'do', 'switch', 'case', 'default', 'True', 'False', Tipos de datos
+ * ('Integer', 'Float', 'String', 'Char', 'Boolean'), Identificadores, Valores,
+ * Operadores ('+', '-', '*', '/', '%', '^', '==', '!=', '<', '>', '<=', '>=',
+ * '&&', '||', '!', ';', '=','+=' ,'-=' ,'*=' ,'/=' ,'%=','++','--') '"',
+ * '''</li>
  * 
  * <li>Producciones:
  * <ol>
@@ -25,23 +26,26 @@ import Utilidades.myToken;
  * 
  * <li>Bloque → Bloque Sentencia | Sentencia</li>
  * 
- * <li>Sentencia → Declaracion | Asignacion | If | For | While | DoWhile |
- * Switch</li>
+ * <li>Sentencia → Declaracion ';' | Asignacion ';' | If | For | While | DoWhile
+ * | Switch | ControlFlujo</li>
+ * <li>ControlFlujo → 'break' ';' | 'continue' ';'</li>
  * 
- * <li>Declaracion → Tipo Identificador '=' ValorInicial ';' || Tipo
- * Identificador ';'</li>
+ * <li>Declaracion → Tipo ListaVariables</li>
+ * <li>ListaVariables → ListaVariables ',' VariableConInicializacion |
+ * VariableConInicializacion</li>
+ * <li>VariableConInicializacion → Identificador | Identificador '='
+ * Expresion</li>
  * 
- * <li>Asignacion → Identificador '=' Expresion ';' || Incremento ';'</li>
+ * <li>Asignacion → ListaAsignacion '=' Expresion || Identificador
+ * AsignacionCompuesta Expresion || Incremento</li>
+ * <li>ListaAsignacion → Identificador | ListaAsignacion '=' Identificador</li>
+ * <li>Incremento → Identificador '++' | Identificador '--'</li>
  * 
  * <li>If → 'if' '(' Expresion ')' '{' Bloque '}' Else</li>
  * <li>Else → 'else' '{' Bloque '}' || 'else' If || ε</li>
  * 
- * <li>For → 'for' '(' InicializacionFor ';' Expresion ';' PasoFor ')' '{'
- * Bloque '}'</li>
- * <li>InicializacionFor → Declaracion | Asignacion</li>
- * <li>PasoFor → Asignacion | Incremento</li>
- * 
- * <li>Incremento → Identificador '++' | Identificador '--'</li>
+ * <li>For → 'for' '(' Declaracion ';' Expresion ';' Asignacion ')' '{' Bloque
+ * '}'</li>
  * 
  * <li>While → 'while' '(' Expresion ')' '{' Bloque '}'</li>
  * 
@@ -54,20 +58,21 @@ import Utilidades.myToken;
  * 
  * <li>Expresion → Expresion OperadorAritmetico Expresion | Expresion
  * OperadorComparacion Expresion | Expresion OperadorLogico Expresion | '!'
- * Expresion | Expresion '?' Expresion ':' Expresion ';' | '(' Expresion ')' |
- * Numero | Identificador</li>
+ * Expresion | '-' Expresion | Expresion '?' Expresion ':' Expresion ';' | '(' Expresion ')' |
+ * Valor | Identificador</li>
  * 
+ * <li>AsignacionCompuesta → '+=' | '-=' | '*=' | '/=' | '%='</li>
  * <li>OperadorAritmetico → '+' | '-' | '*' | '/' | '%'</li>
  * <li>OperadorComparacion → '==' | '!=' | '<' | '>' | '<=' | '>='</li>
  * <li>OperadorLogico → '&&' | '||'</li>
- * <li>Tipo → 'Integer' | 'Float' | 'String' | 'Character' | 'Boolean'</li>
- * <li>ValorInicial → Numero | NumeroConPunto | CadenaDeTexto | Caracter |
- * ValorBooleano</li>
+ * 
+ * <li>Tipo → 'int' | 'float' | 'str' | 'char' | 'bool'</li>
+ * <li>Valor → Numero | Real | Texto | Caracter | Booleano</li>
  * <li>Numero → '[0-9]+'</li>
- * <li>NumeroConPunto → '[0-9]*' '.' '[0-9]+'</li>
- * <li>CadenaDeTexto → '"' [^"]* '"'</li>
+ * <li>Real → '[0-9]*' '.' '[0-9]+'</li>
+ * <li>Texto → '"' [^"]* '"'</li>
  * <li>Caracter → '\'' . '\''</li>
- * <li>ValorBooleano → 'True' | 'False'</li>
+ * <li>Booleano → 'True' | 'False'</li>
  * </ol>
  * </li>
  * 
@@ -92,10 +97,9 @@ import Utilidades.myToken;
  * @apiNote Analiza sintacticamente, condicionales (if, else, switch), ciclos de
  *          control (for, while, do while), operadores aritmeticos
  *          (+,-,*,/,%,^,++,--), operadores de comparacion(==,>=,<=,!=,<,>),
- *          operadores de asignacion compuestos (+=,-=,*=,/=,%=,^=), operadores
- *          logicos (&&,||,!), operador de asignacion (=) operadores ternarios
- *          (?,:) y tipos de variables (String, Character, Integer, Boolean,
- *          Float)
+ *          operadores de asignacion (+=,-=,*=,/=,%=,=), operadores logicos
+ *          (&&,||,!), operadores ternarios (?,:) y tipos de variables (String,
+ *          Character, Integer, Boolean, Float)
  * 
  */
 public class SintacticoGecko extends StringHandler {
@@ -103,7 +107,7 @@ public class SintacticoGecko extends StringHandler {
 	public static void main(String[] args) throws Exception {
 		long tiempoInicio = System.currentTimeMillis();
 
-		LexicalGecko lexical = new LexicalGecko("src\\Lenguajes_Automatas2\\txt\\Gecko.txt");
+		LexicalGecko lexical = new LexicalGecko("src\\Lenguajes_Automatas2\\txt\\Gecko3.txt");
 		lexical.printInput();
 		lexical.printTokenTable();
 		lexical.printSymbolTable();
@@ -141,6 +145,7 @@ public class SintacticoGecko extends StringHandler {
 		String token = currentToken();
 		if (isDataType(token)) {
 			parseDeclaration();
+			match(SEMICOLON); // ';'
 		} else if (compareStrings(token, IF)) {
 			parseIf();
 		} else if (compareStrings(token, FOR)) {
@@ -151,35 +156,29 @@ public class SintacticoGecko extends StringHandler {
 			parseDoWhile();
 		} else if (compareStrings(token, SWITCH)) {
 			parseSwitch();
-		} else if (compareStrings(token, BREAK) || compareStrings(token, CONTINUE)) {
-			match(token);
-			match(SEMICOLON);
 		} else {
 			parseAssignment();
+			match(SEMICOLON); // ';'
 		}
 	}
 
 	private void parseDeclaration() { // Produccion declaracion
 		match(currentToken());
 		match(IDENTIFIER);
-		if (compareStrings(currentToken(), SEMICOLON)) {
-			match(SEMICOLON); // ';'
-		} else {
+		if (compareStrings(currentToken(), ASSIGN)) {
 			match(ASSIGN); // '='
 			parseExpression();
-			match(SEMICOLON); // ';'
 		}
 	}
 
 	private void parseAssignment() { // Produccion asginacion
-		match(currentToken());
+		match(IDENTIFIER); // Match con el identificador
 		if (compareStrings(currentToken(), INCREMENT) || compareStrings(currentToken(), DECREMENT)) {
 			match(currentToken()); // ++ ó --
 		} else {
-			match(ASSIGN); // '='
+			match(checkAssignment(currentToken())); // '=', '*=', '/=', '+=', '-=', '%=',
 			parseExpression();
 		}
-		match(SEMICOLON); // ';'
 	}
 
 	private void parseIf() { // Produccion if
@@ -210,46 +209,16 @@ public class SintacticoGecko extends StringHandler {
 	private void parseFor() { // Produccion for
 		match(FOR);
 		match(LEFT_PAREN); // '('
-		parseIniFor();
+		parseDeclaration();
 		match(SEMICOLON); // ';'
 		parseExpression();
 		match(SEMICOLON); // ';'
-		parseStepFor();
+		parseAssignment();
 		match(RIGHT_PAREN); // ')'
 		match(LEFT_BRACE); // '{'
 		parseBlock();
 		match(RIGHT_BRACE); // '}'
 	}
-
-	private void parseIniFor() {
-		String token = currentToken();
-		if (isDataType(token)) {
-			match(token);
-			match(IDENTIFIER);
-			match(ASSIGN);
-			parseExpression();
-		} else if (compareStrings(token, IDENTIFIER)) {
-			match(IDENTIFIER);
-			match(ASSIGN);
-			parseExpression();
-		} else {
-			throw new RuntimeException("Unexpected token in expression: " + currentToken());
-		}
-	}
-
-	private void parseStepFor() {
-		match(IDENTIFIER);
-		String token = currentToken();
-		if (compareStrings(token, INCREMENT) || compareStrings(token, DECREMENT)) {
-			match(token);
-		} else if (compareStrings(token, ASSIGN)) {
-			match(ASSIGN);
-			parseArithmeticExpression();
-		} else {
-			throw new RuntimeException("Unexpected token in expression: " + token);
-		}
-	}
-	// Aqui termina las producciones de for
 
 	private void parseWhile() { // Produccion while
 		match(WHILE);
@@ -350,18 +319,18 @@ public class SintacticoGecko extends StringHandler {
 
 	private void parseFactor() {
 		String token = currentToken();
-		if (compareStrings(token, NOT)) {
-			match(NOT); // Match !
+		if (compareStrings(token, NOT) || compareStrings(token, LESS)) {
+			match(NOT); // Match ! ó Match - 
 			parseFactor();
 		} else if (compareStrings(token, LEFT_PAREN)) {
 			match(LEFT_PAREN); // Match (
 			parseExpression();
 			match(RIGHT_PAREN); // Match )
-		} else if (isDataType(token) || compareStrings(token, IDENTIFIER) || compareStrings(token, TRUE)
-				|| compareStrings(token, FALSE)) {
+		} else if (compareStrings(token, IDENTIFIER) || compareStrings(token, TRUE) || compareStrings(token, FALSE)
+				|| isLiteralType(token)) {
 			match(token); // Match number or identifier
 		} else {
-			throw new RuntimeException("Unexpected token in expression: " + token);
+			throw new RuntimeException("Unknow token in expression: " + token);
 		}
 	}
 
@@ -390,26 +359,32 @@ public class SintacticoGecko extends StringHandler {
 	// Metodos booleanos
 	private static boolean isDataType(String token) {
 		return compareStrings(token, INTEGER) || compareStrings(token, FLOAT) || compareStrings(token, STRING)
-				|| compareStrings(token, CHAR) || compareStrings(token, BOOLEAN);
+				|| compareStrings(token, CHAR) || compareStrings(token, BOOL);
 	}
 
-	@SuppressWarnings("unused")
-	private static boolean isOperator(String token) {
-		return isArithmeticOperator(token) || isComparisonOperator(token) || isLogicalOperator(token);
-	}
+	private static boolean isLiteralType(String token) {
+		return compareStrings(token, NUMBER) || compareStrings(token, REAL) || compareStrings(token, TEXT)
+				|| compareStrings(token, CHARACTER) || compareStrings(token, BOOL);
 
-	private static boolean isArithmeticOperator(String token) {
-		return compareStrings(token, PLUS) || compareStrings(token, MINUS) || compareStrings(token, TIMES)
-				|| compareStrings(token, DIVIDE) || compareStrings(token, MODULO);
-	}
-
-	private static boolean isLogicalOperator(String token) {
-		return compareStrings(token, AND) || compareStrings(token, OR);
 	}
 
 	private static boolean isComparisonOperator(String token) {
 		return compareStrings(token, EQUALS) || compareStrings(token, NOT_EQUALS) || compareStrings(token, LESS)
 				|| compareStrings(token, LESS_EQUAL) || compareStrings(token, GREATER)
 				|| compareStrings(token, GREATER_EQUAL);
+	}
+
+	private boolean isAssignment(String token) {
+		return compareStrings(token, ASSIGN) || compareStrings(token, ADD_ASSIGN)
+				|| compareStrings(token, DIVIDE_ASSIGN) || compareStrings(token, MODULUS_ASSIGN)
+				|| compareStrings(token, MULTIPLY_ASSIGN) || compareStrings(token, SUBTRACT_ASSIGN);
+	}
+
+	private String checkAssignment(String token) {
+		if (!isAssignment(token)) {
+			throw new RuntimeException(
+					"Error de sintaxis, se esperaba una asginador en lugar de '" + token + "' Token ->" + (pos + 1));
+		}
+		return token;
 	}
 }
